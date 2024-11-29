@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
-#include <string> // For using the string class
+#include <string>
+#include <limits> 
 
 using namespace std;
 
@@ -11,39 +12,53 @@ private:
     int minute; // Holds the minute from user
 
 public:
-    // Constructor 
+    // Constructor
     Time() : hour(0), minute(0) {}
 
-    // Setter to validate and set hour
-    void setHour(int h) {
-        if (h >= 1 && h <= 12) { // Valid range for hour (1 to 12)
-            hour = h;
-        }
-        else {
-            throw invalid_argument("Hour must be between 1 and 12."); // Error if invalid hour (using throw instead of fail()
+    // Setter - validate and set hour  (Same Validation i always use)
+    void setHour() {
+        while (true) {// Same input validation that I always use
+            cout << "Enter hour (1-12): ";
+            if (!(cin >> hour)) {
+                cout << "Invalid input. Please enter a number between 1 and 12." << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            else if (hour < 1 || hour > 12) {
+                cout << "Invalid hour. Please enter a value between 1 and 12." << endl;
+            }
+            else {
+                break;
+            }
         }
     }
 
-    // Setter to validate and set minute
-    void setMinute(int m) {
-        if (m >= 0 && m <= 59) { // Valid range for minute (0 to 59)
-            minute = m;
-        }
-        else {
-            throw invalid_argument("Minute must be between 0 and 59."); // Error if invalid minute
+    // Setter - validate and set minute
+    void setMinute() {
+        while (true) { // Same validation i always use
+            cout << "Enter minute (0-59): ";
+            if (!(cin >> minute)) {
+                cout << "Invalid input. Please enter a number between 0 and 59." << endl;
+                cin.clear(); // Clear the error 
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
+            else if (minute < 0 || minute > 59) { // Check range
+                cout << "Invalid minute. Please enter a value between 0 and 59." << endl;
+            }
+            else {
+                break;
+            }
         }
     }
 
     // Function to convert time into words
     string convertToWords() {
-        string result; // To store the final output string
+        string result;
 
         if (minute == 0) {
-            // Case: "o'clock" (e.g., "Five o'clock")
             result = numberToWords(hour) + " o'clock";
         }
         else if (minute <= 30) {
-            // Case: "past" times
             if (minute == 15) {
                 result = "Quarter past " + numberToWords(hour);
             }
@@ -55,9 +70,9 @@ public:
             }
         }
         else {
-            // Case: "to" times
+
             int nextHour = (hour == 12) ? 1 : hour + 1; // Increment hour, wrap around after 12
-            int remainingMinutes = 60 - minute;        // Minutes to the next hour
+            int remainingMinutes = 60 - minute;
 
             if (remainingMinutes == 15) {
                 result = "Quarter to " + numberToWords(nextHour);
@@ -67,30 +82,33 @@ public:
             }
         }
 
-        return result; // Return the final time string
+        return result;
     }
 
-    // Function to print the converted time
     void printTime() {
-        cout << convertToWords() << endl; // Print the time in words
+        cout << convertToWords() << endl;
     }
 
 private:
-    // Helper function to convert numbers to words
+    // convert numbers to words                 // (Same as Previous Assignment)
     string numberToWords(int num) {
-        // Array of words for numbers 1-19
         string ones[] = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
                          "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
                          "Seventeen", "Eighteen", "Nineteen" };
 
-        // Array of words for tens multiples
         string tens[] = { "", "", "Twenty", "Thirty", "Forty", "Fifty" };
 
-        if (num <= 19) {
-            return ones[num]; // Return word for numbers 1-19
+        if (num == 0) {
+            return "Zero";
+        }
+
+        // use our ones if num < 19..
+        else if (num <= 19) {
+            return ones[num];  // use the user entered number as the index
         }
         else {
-            // Combine tens and ones for numbers 20-59
+
+            // divide by ten.. get ramainder for index
             return tens[num / 10] + (num % 10 == 0 ? "" : " " + ones[num % 10]);
         }
     }
@@ -98,31 +116,27 @@ private:
 
 // Main function
 int main() {
-    char choice; // Variable for user choice to run again
+    char choice;
 
+    // do while to run until user says 'n'
     do {
-        try {
-            Time t;        // Create an instance of the Time class
-            int h, m;      // Variables for hour and minute
-            cout << "Enter hour (1-12): ";
-            cin >> h;      // Get hour input
-            t.setHour(h);  // Set hour in the Time object
+        Time t; // Create instance of the Time class
 
-            cout << "Enter minute (0-59): ";
-            cin >> m;      // Get minute input
-            t.setMinute(m); // Set minute in the Time object
+        t.setHour();   //get hour from user
+        t.setMinute(); // get minute from user
 
-            cout << "Time: ";
-            t.printTime(); // Display the time in words
-        }
-        catch (const invalid_argument& e) {
-            // Catch and display validation errors
-            cout << "Error: " << e.what() << endl;
-        }
+        cout << "Time: ";
+        t.printTime(); // Display the time in words
 
+        // Ask user if they want to run again
         cout << "Run Again (Y/N): ";
-        cin >> choice; // Get user input for running again
-    } while (tolower(choice) == 'y'); // Continue if user enters 'y'
+        cin >> choice;
+        choice = tolower(choice); // to lowercase
+
+        // Clear input buffer after choice
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    } while (choice == 'y');
 
     return 0;
 }
