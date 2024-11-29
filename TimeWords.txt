@@ -1,0 +1,25 @@
+2. Write a C++ program to convert numbers into clock word time. For example:
+5:00 Five o'clock
+5:10 Ten minutes past five
+5:15 Quarter past five
+5:30 Half past five
+5:45 Quarter to six
+5:47 Thirteen minutes to six
+Input from the keyboard two numbers: the hour in the range [1,12] and seconds in the range [0,59].
+Error check (validate) inputs. Output to the screen the time represented, in clock words following the
+sample above. Finally, the program should ask if the user wants to run the program again (Check case).
+Refer to the sample output below.
+Sample Run:
+Hour and minute: 4 12
+Time: Twelve minutes past four
+Run Again (Y/N): y
+Hour and minute: 1 0
+Time: One o'clock
+Run Again (Y/N): Y
+Hour and minute: 6 37
+Time: Twenty-three minutes to seven
+Run Again (Y/N): Y
+Hour and minute: 2 3
+Time: Three minutes past two
+Run Again (Y/N): n
+Name the program: TimeWordsXX.cpp, where XX are your initials
